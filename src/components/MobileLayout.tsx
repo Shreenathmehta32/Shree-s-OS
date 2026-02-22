@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { profile, skills, experience, education, certifications } from '../data/profile';
 import { projects, languageColors } from '../data/projects';
 import { GitHubStats } from './GitHubStats';
@@ -264,47 +265,50 @@ export const MobileLayout: React.FC = () => {
     const typingText = useTypingAnimation();
 
     return (
-        <div className="mobile-root">
-            {/* Top header bar */}
-            <div className="mobile-header">
-                <div className="mobile-header-brand">
-                    <span className="mobile-header-logo">🐧</span>
-                    <span className="mobile-header-title">Shree's OS</span>
-                </div>
-                <div className="mobile-header-typing">
-                    <span className="typing-prompt">&gt;</span>
-                    <span className="typing-text"> {typingText}</span>
-                    <span className="typing-cursor">|</span>
-                </div>
-            </div>
-
-            {/* Tab content */}
-            <div className="mobile-content">
-                {activeTab === 'about' && <AboutPanel />}
-                {activeTab === 'projects' && <ProjectsPanel />}
-                {activeTab === 'skills' && <SkillsPanel />}
-                {activeTab === 'resume' && <ResumePanel />}
-                {activeTab === 'contact' && <ContactPanel />}
-                {activeTab === 'terminal' && (
-                    <div className="mobile-terminal-wrapper">
-                        <Terminal />
+        <>
+            <div className="mobile-root">
+                {/* Top header bar */}
+                <div className="mobile-header">
+                    <div className="mobile-header-brand">
+                        <span className="mobile-header-logo">🐧</span>
+                        <span className="mobile-header-title">Shree's OS</span>
                     </div>
-                )}
-            </div>
+                    <div className="mobile-header-typing">
+                        <span className="typing-prompt">&gt;</span>
+                        <span className="typing-text"> {typingText}</span>
+                        <span className="typing-cursor">|</span>
+                    </div>
+                </div>
 
-            {/* Bottom tab bar */}
-            <nav className="mobile-tabbar">
-                {tabs.map((tab) => (
-                    <button
-                        key={tab.id}
-                        className={`mobile-tab ${activeTab === tab.id ? 'active' : ''}`}
-                        onClick={() => setActiveTab(tab.id)}
-                    >
-                        <span className="mobile-tab-icon">{tab.icon}</span>
-                        <span className="mobile-tab-label">{tab.label}</span>
-                    </button>
-                ))}
-            </nav>
-        </div>
+                {/* Tab content */}
+                <div className="mobile-content">
+                    {activeTab === 'about' && <AboutPanel />}
+                    {activeTab === 'projects' && <ProjectsPanel />}
+                    {activeTab === 'skills' && <SkillsPanel />}
+                    {activeTab === 'resume' && <ResumePanel />}
+                    {activeTab === 'contact' && <ContactPanel />}
+                    {activeTab === 'terminal' && (
+                        <div className="mobile-terminal-wrapper">
+                            <Terminal />
+                        </div>
+                    )}
+                </div>
+
+                {/* Bottom tab bar */}
+                <nav className="mobile-tabbar">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.id}
+                            className={`mobile-tab ${activeTab === tab.id ? 'active' : ''}`}
+                            onClick={() => setActiveTab(tab.id)}
+                        >
+                            <span className="mobile-tab-icon">{tab.icon}</span>
+                            <span className="mobile-tab-label">{tab.label}</span>
+                        </button>
+                    ))}
+                </nav>
+            </div>
+            <Analytics />
+        </>
     );
 };
