@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { Window } from './components/Window';
 import { Terminal } from './components/apps/Terminal';
 import { FileManager } from './components/apps/FileManager';
@@ -482,6 +483,7 @@ const App: React.FC = () => {
           <span className="taskbar-clock">{clock}</span>
         </div>
       </div>
+      <Analytics />
     </>
   );
 };
