@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { profile, skills, experience, education, certifications } from '../../data/profile';
+import { profile, skills, experience, education, certifications, achievements, currentWork, roles, securityConf } from '../../data/profile';
 import { projects } from '../../data/projects';
 
 // ═══════════════════════  VIRTUAL FILE SYSTEM  ═══════════════════════
@@ -20,14 +20,99 @@ const buildFS = (): FSNode => ({
                     children: {
                         'about.txt': {
                             type: 'file',
-                            content: `╔══════════════════════════════════════════╗
-║          ABOUT — Shreenath Mehta         ║
-╚══════════════════════════════════════════╝
+                            content: `╔══════════════════════════════════════════════════════════════╗
+║               ABOUT — Shreenath Mehta                        ║
+║     Cybersecurity • Offensive Security • AI & Automation     ║
+╚══════════════════════════════════════════════════════════════╝
 
 ${profile.title}
-📍 ${profile.location}
+📍 Location: ${profile.location}
+🛡️ Role:     ${profile.role}
+⚡ Status:   ${profile.status}
+🎯 Mission:  ${profile.mission}
 
 ${profile.summary}
+`,
+                        },
+                        'security.conf': {
+                            type: 'file',
+                            content: `Cybersecurity
+├── Offensive Security
+│   ├── Web Application Security
+│   ├── API Security
+│   └── Authentication & Authorization
+├── Penetration Testing
+├── CTF Competitions
+├── Vulnerability Research
+├── Cryptography
+├── OSINT
+└── Security Automation
+`,
+                        },
+                        'current-work.txt': {
+                            type: 'file',
+                            content: `[+] Learning   →  Offensive Security / Web Application Pentesting
+[+] Practicing →  CTF Challenges & Vulnerability Research
+[+] Building   →  Privacy-first AI tools & Security automation
+[+] Exploring  →  AI Security, API Security & Linux Internals
+[+] Writing    →  Security notes, writeups & documentation
+`,
+                        },
+                        'achievements.log': {
+                            type: 'file',
+                            content: `[2026] SAS CTF 2026
+       ├── Global Rank : #77
+       └── India Rank  : #1 🇮🇳
+
+[2025] Nebula Nexus Hackathon
+       ├── Prize  : 2nd Place 🥈
+       └── Team   : ZERODAY CREW
+
+[2025] Manipal University Jaipur — Hardware Exhibition
+       └── Prize  : 2nd Place 🥈 (ESP32 Notifier)
+
+[2025] VGU, Jaipur
+       └── Prize  : Consolation Prize 🏅
+
+[2026] BSides Jaipur 2026
+       └── Event  : Conference Participation 🛡️
+`,
+                        },
+                        'experience.log': {
+                            type: 'file',
+                            content: `[ROLE]  Full Stack Developer
+         Org    : Todwal Infotech
+         Period : Jan 2026 — Present
+
+[ROLE]  Freelancer
+         Role   : Web Pentester
+         Focus  : Web & API Security Audits
+
+[ROLE]  Udaan Aeromodelling Club
+         Role   : Core Team — Webmaster
+
+[INTERN] Research Internship
+         Org    : AI Labs / Digital Hammerr®
+         Topic  : AI-Powered Healthcare Chatbots with
+                  Blockchain-secured Patient Data Management
+
+[INTERN] Grras Solution
+         Topic  : Linux & AWS Cloud
+
+[INTERN] Syntecxhub
+         Topic  : Cybersecurity (CVE & Port Scanners, SQLi, Chat App)
+
+[INTERN] GirlScript Summer of Code (GSSoC)
+         Topic  : Open Source Contributor
+`,
+                        },
+                        'roles.txt': {
+                            type: 'file',
+                            content: `[ROLE]  Udaan Aeromodelling Club
+        └── Webmaster & Core Team (Robotics & Web)
+
+[ROLE]  Freelancer
+        └── Web Pentester (Offensive Security)
 `,
                         },
                         'resume.pdf': {
@@ -41,12 +126,15 @@ or run:  open resume`,
                             type: 'file',
                             content: JSON.stringify(
                                 {
-                                    _comment: 'Shreenath Mehta — Technical Skills',
-                                    skills: skills.map((s) => ({
-                                        name: s.name,
-                                        proficiency: `${s.level}%`,
-                                        category: s.category,
-                                    })),
+                                    _comment: 'Shreenath Mehta — Technical & Security Skills',
+                                    security: skills.filter(s => s.category === 'security'),
+                                    systems: skills.filter(s => s.category === 'systems'),
+                                    ai: skills.filter(s => s.category === 'ai'),
+                                    frontend: skills.filter(s => s.category === 'frontend'),
+                                    backend: skills.filter(s => s.category === 'backend'),
+                                    blockchain: skills.filter(s => s.category === 'blockchain'),
+                                    hardware: skills.filter(s => s.category === 'hardware'),
+                                    tools: skills.filter(s => s.category === 'tools'),
                                 },
                                 null,
                                 2
@@ -61,6 +149,7 @@ or run:  open resume`,
 📧  Email:    ${profile.email}
 🔗  LinkedIn: ${profile.linkedin}
 🐙  GitHub:   ${profile.github}
+𝕏   Twitter:  ${profile.x}
 📍  Location: ${profile.location}
 `,
                         },
@@ -71,7 +160,8 @@ export PS1="\\u@portfolio:\\w\\$ "
 export EDITOR=nano
 alias ll='ls -la'
 alias cls='clear'
-alias hack='echo "Access Denied 😈"'
+alias hack='echo "Access Granted. CTF Flag: FLAG{s4s_ctf_ind1a_#1}"'
+alias ctf='achievements'
 neofetch`,
                         },
                         '.secret': {
@@ -79,6 +169,7 @@ neofetch`,
                             content: `🎉 You found the secret file!
 
 Easter egg: Run "sudo hire-me" for a surprise.
+Flag: FLAG{0ffens1ve_sec_bu1ld_br3ak_und3rstand_s3cure}
 
 "The only way to do great work is to love what you do."
 — Steve Jobs`,
@@ -93,7 +184,7 @@ Easter egg: Run "sudo hire-me" for a surprise.
                                         children: {
                                             'README.md': {
                                                 type: 'file' as const,
-                                                content: `# ${p.displayName}\n\n${p.description}\n\n🔗 GitHub: ${p.githubUrl}${p.liveUrl ? `\n🌐 Live:   ${p.liveUrl}` : ''}\n📦 Language: ${p.language}\n`,
+                                                content: `# ${p.displayName}\n\n${p.description}\n\n🔗 GitHub: ${p.githubUrl}${p.liveUrl ? `\n🌐 Live:   ${p.liveUrl}` : ''}\n📦 Language: ${p.language}\n🏷️ Category: ${p.category}\n`,
                                             },
                                         },
                                     },
@@ -180,13 +271,19 @@ const normalizePath = (cwd: string[], rel: string): string[] => {
 // ═══════════════════════  AVAILABLE COMMANDS  ═══════════════════════
 const ALL_COMMANDS = [
     'help', 'whoami', 'about', 'skills', 'projects', 'experience', 'education',
-    'certs', 'contact', 'neofetch', 'clear', 'ls', 'cd', 'cat', 'pwd', 'mkdir',
-    'tree', 'echo', 'date', 'uptime', 'open', 'sudo', 'apt', 'pip', 'history',
-    'cowsay', 'fortune', 'man',
+    'certs', 'achievements', 'security', 'current-work', 'roles', 'status',
+    'service', 'ctf', 'contact', 'neofetch', 'clear', 'ls', 'cd', 'cat',
+    'pwd', 'mkdir', 'tree', 'echo', 'date', 'uptime', 'open', 'sudo',
+    'apt', 'pip', 'history', 'cowsay', 'fortune', 'man',
 ];
 
 // ═══════════════════════  FAKE PACKAGE LISTS  ═══════════════════════
 const APT_PACKAGES: Record<string, string> = {
+    'burpsuite': 'Burp Suite Professional 2026.1',
+    'nmap': 'Nmap 7.95 (Network Exploration & Security Auditing)',
+    'wireshark': 'Wireshark 4.2.4 (Network Protocol Analyzer)',
+    'metasploit': 'Metasploit Framework 6.4.1',
+    'sqlmap': 'sqlmap 1.8.3 (Automatic SQL Injection Tool)',
     'react': 'React 19.0.0',
     'typescript': 'TypeScript 5.7.2',
     'vite': 'Vite 7.3.1',
@@ -198,21 +295,25 @@ const APT_PACKAGES: Record<string, string> = {
     'neovim': 'Neovim 0.10.0',
     'docker': 'Docker 26.0.0',
     'git': 'Git 2.44.0',
-    'nginx': 'Nginx 1.25.4',
-    'creativity': 'Creativity 999.99',
     'hacking-skills': 'Ethical Hacking Toolkit 4.2.0',
 };
 
 const PIP_PACKAGES: Record<string, string> = {
-    'tensorflow': 'TensorFlow 2.16',
-    'pytorch': 'PyTorch 2.2',
-    'numpy': 'NumPy 1.26',
-    'flask': 'Flask 3.0',
-    'django': 'Django 5.0',
-    'openai': 'OpenAI SDK 1.12',
+    'focusorm': 'FocusORM 1.0.0 (Local-First AI Productivity)',
+    'onyx': 'ONYX 1.0 (Privacy-First On-Device AI Assistant)',
+    'scapy': 'Scapy 2.5.0 (Packet Manipulation Tool)',
+    'requests': 'Requests 2.31.0',
+    'cryptography': 'Cryptography 42.0.5',
+    'pwntools': 'pwntools 4.12.0 (CTF Framework & Exploit Dev)',
+    'beautifulsoup4': 'BeautifulSoup4 4.12.3',
+    'flask': 'Flask 3.0.2',
+    'fastapi': 'FastAPI 0.110.0',
+    'openai': 'OpenAI SDK 1.12.0',
 };
 
 const FORTUNES = [
+    '"Build. Break. Understand. Secure." — Shreenath Mehta',
+    '"If it runs, it can be broken; if it can be broken, it can be secured."',
     '"The best way to predict the future is to invent it." — Alan Kay',
     '"Talk is cheap. Show me the code." — Linus Torvalds',
     '"Any fool can write code that a computer can understand. Good programmers write code that humans can understand." — Martin Fowler',
@@ -220,7 +321,6 @@ const FORTUNES = [
     '"The only way to learn a new programming language is by writing programs in it." — Dennis Ritchie',
     '"Code is like humor. When you have to explain it, it\'s bad." — Cory House',
     '"Simplicity is the soul of efficiency." — Austin Freeman',
-    '"Make it work, make it right, make it fast." — Kent Beck',
 ];
 
 // ═══════════════════════  COMPONENT  ═══════════════════════
@@ -228,7 +328,7 @@ export const Terminal: React.FC = () => {
     const [lines, setLines] = useState<{ type: 'input' | 'output'; content: string }[]>([
         {
             type: 'output',
-            content: `Welcome to <span class="highlight">Shree's OS v2.0.26 LTS</span> (GNU/Linux 6.8.0-generic x86_64)\n\nType <span class="highlight">help</span> to see available commands.\nType <span class="highlight">ls</span> to explore the file system.\n`,
+            content: `Welcome to <span class="highlight">Shree's OS v2.0.26 LTS</span> (GNU/Linux 6.8.0-generic x86_64)\n\nType <span class="highlight">help</span> to see available commands.\nType <span class="highlight">achievements</span> or <span class="highlight">security</span> to explore offensive security records.\nType <span class="highlight">ls</span> to explore the file system.\n`,
         },
     ]);
     const [currentInput, setCurrentInput] = useState('');
@@ -275,51 +375,58 @@ export const Terminal: React.FC = () => {
             // ──── help ────
             case 'help':
                 output = `
-<span class="highlight">┌─────────────────────────────────────────────┐</span>
-<span class="highlight">│         Shree's OS — Command Reference      │</span>
-<span class="highlight">└─────────────────────────────────────────────┘</span>
+<span class="highlight">┌─────────────────────────────────────────────────────────┐</span>
+<span class="highlight">│             Shree's OS — Command Reference              │</span>
+<span class="highlight">└─────────────────────────────────────────────────────────┘</span>
 
   <span class="success">Navigation</span>
-    ls [path]        List directory contents
-    cd [path]        Change directory
-    pwd              Print working directory
-    cat [file]       Display file contents
-    tree [path]      Show directory tree
-    mkdir [name]     Create directory
+    ls [path]         List directory contents
+    cd [path]         Change directory
+    pwd               Print working directory
+    cat [file]        Display file contents
+    tree [path]       Show directory tree
+    mkdir [name]      Create directory
 
-  <span class="success">Profile</span>
-    whoami           Show user info
-    about            Bio and summary
-    skills           Technical skills
-    projects         GitHub projects
-    experience       Work experience
-    education        Education history
-    certs            Certifications
-    contact          Contact info
-    neofetch         System info with ASCII art
+  <span class="success">Cybersecurity & Profile</span>
+    whoami            Show user identity & offensive security focus
+    security          Display cybersecurity hierarchy & domains
+    achievements      Show CTFs, hackathons & competition awards
+    ctf               SAS CTF 2026 rankings & highlights
+    current-work      Active focus (learning, building, exploring)
+    roles             Current leadership & pentesting roles
+    status / service  systemctl status of shreenath.service
+    about             Bio, manifesto, and summary
+    skills            Technical & offensive security skills
+    projects          Showcase of projects & repos (${projects.length} repos)
+    experience        Work & internship experience
+    education         Education history
+    certs             Certifications list
+    contact           Contact info & social links
+    neofetch          System info with fetch ASCII art
 
   <span class="success">Actions</span>
-    open github      Open GitHub profile
-    open linkedin    Open LinkedIn profile
-    open [project]   Open project live link
-    sudo hire-me     😏 Try it…
+    open github       Open GitHub profile
+    open linkedin     Open LinkedIn profile
+    open x / twitter  Open X / Twitter profile
+    open [project]    Open project live link or repo
+    sudo hire-me      😏 Try it…
 
   <span class="success">Package Managers</span>
-    apt install [pkg]   Install a package
-    pip install [pkg]   Install a Python package
+    apt install [pkg] Install a tool (burpsuite, nmap, wireshark...)
+    pip install [pkg] Install a Python package (focusorm, onyx...)
 
-  <span class="success">Fun</span>
-    cowsay [text]    ASCII cow says something
-    fortune          Random dev quote
-    history          Command history
-    echo [text]      Print text
-    date             Current date/time
-    uptime           System uptime
+  <span class="success">Fun & Tools</span>
+    cowsay [text]     ASCII cow speaks
+    fortune           Random dev quote / hacker motto
+    history           Command history
+    echo [text]       Print text
+    date              Current date/time
+    uptime            System uptime
 
   <span class="success">System</span>
-    clear            Clear terminal
-    help             This help message
-    man [command]    Manual for a command
+    clear             Clear terminal
+    help              This help message
+    man [command]     Manual for a command
 `;
                 break;
 
@@ -327,10 +434,67 @@ export const Terminal: React.FC = () => {
             case 'whoami':
                 output = `
 <span class="highlight">${profile.name}</span>
-<span class="muted">${profile.title}</span>
-<span class="muted">📍 ${profile.location}</span>
-<span class="muted">📧 ${profile.email}</span>
-<span class="muted">🐙 github.com/Shreenathmehta32</span>
+<span class="success">Role:   ${profile.role}</span>
+<span class="highlight">Focus:  ${profile.focus}</span>
+<span class="warning">Mission: "${profile.mission}"</span>
+<span class="muted">📍 Location: ${profile.location}</span>
+<span class="muted">📧 Email:    ${profile.email}</span>
+<span class="muted">🐙 GitHub:   ${profile.github}</span>
+<span class="muted">𝕏  Twitter:  ${profile.x}</span>
+`;
+                break;
+
+            // ──── security ────
+            case 'security':
+                output = `\n<span class="highlight">Security Architecture & Configuration:</span>\n\n` +
+                    `<pre class="terminal-tree" style="color:var(--accent-secondary);font-family:inherit;">${securityConf.tree}</pre>\n` +
+                    `<span class="highlight">Active Focus Domains:</span>\n` +
+                    securityConf.domains.map(d => `  <span class="success">⚡ ${d.name}</span>: <span class="muted">${d.desc}</span>`).join('\n') +
+                    `\n`;
+                break;
+
+            // ──── achievements / awards / ctf ────
+            case 'achievements':
+            case 'awards':
+            case 'ctf':
+                output = `\n<span class="highlight">Achievements & Competitions Log:</span>\n\n`;
+                achievements.forEach((a) => {
+                    output += `  <span class="warning">[${a.year}] ${a.title}</span>\n`;
+                    output += `         ├── <span class="success">${a.highlight}</span>\n`;
+                    output += `         └── <span class="muted">${a.description}</span>\n\n`;
+                });
+                break;
+
+            // ──── current-work / work ────
+            case 'current-work':
+            case 'work':
+            case 'focus':
+                output = `\n<span class="highlight">Current Focus & Activities ($ ./current-work):</span>\n\n`;
+                currentWork.forEach((w) => {
+                    output += `  <span class="success">[+] ${w.label.padEnd(12)}</span> →  <span class="highlight">${w.value}</span>\n`;
+                });
+                output += '\n';
+                break;
+
+            // ──── roles ────
+            case 'roles':
+                output = `\n<span class="highlight">Active Roles & Leadership:</span>\n\n`;
+                roles.forEach((r) => {
+                    output += `  <span class="success">[ROLE]</span>  <span class="highlight">${r.role}</span> (${r.organization})\n`;
+                    output += `          └── <span class="muted">${r.description}</span>\n\n`;
+                });
+                break;
+
+            // ──── status / service ────
+            case 'status':
+            case 'service':
+                output = `
+<span class="success">● shreenath.service</span> — Cybersecurity Student, Pentester & Builder
+   <span class="muted">Loaded:</span> loaded (/etc/shreenath/profile; enabled)
+   <span class="success">Active: ● active (running)</span> since BTech CSE 2024
+   <span class="highlight">Tasks:</span>  CTF · Pentest · Build · Learn · Repeat
+   <span class="warning">Mission:</span> Build. Break. Understand. Secure.
+   <span class="muted">Memory:</span> 100% Passion & Curiosity
 `;
                 break;
 
@@ -338,7 +502,8 @@ export const Terminal: React.FC = () => {
             case 'about':
                 output = `
 <span class="highlight">${profile.name}</span>
-<span class="muted">${profile.title}</span>
+<span class="success">${profile.title}</span>
+<span class="warning">Mission: "${profile.mission}"</span>
 <span class="muted">📍 ${profile.location}</span>
 
 ${profile.summary}
@@ -347,27 +512,28 @@ ${profile.summary}
 
             // ──── skills ────
             case 'skills':
-                output = `\n<span class="highlight">Technical Skills:</span>\n\n`;
+                output = `\n<span class="highlight">Technical & Security Skills:</span>\n\n`;
                 skills.forEach((s) => {
                     const filled = Math.round(s.level / 5);
                     const empty = 20 - filled;
-                    output += `  <span class="success">${s.name.padEnd(20)}</span> [${'█'.repeat(filled)}${'░'.repeat(empty)}] ${s.level}%\n`;
+                    output += `  <span class="success">${s.name.padEnd(30)}</span> [${'█'.repeat(filled)}${'░'.repeat(empty)}] ${s.level}%\n`;
                 });
                 break;
 
             // ──── projects ────
             case 'projects':
-                output = `\n<span class="highlight">GitHub Projects (${projects.length} repos):</span>\n\n`;
+                output = `\n<span class="highlight">Projects & Repositories (${projects.length} repos):</span>\n\n`;
                 projects.forEach((p) => {
                     const live = p.liveUrl ? ` <span class="success">[LIVE]</span>` : '';
-                    output += `  📁 <span class="highlight">${p.displayName}</span>${live}\n`;
-                    output += `     <span class="muted">${p.language} • ${p.description.substring(0, 80)}...</span>\n\n`;
+                    const feat = p.featured ? ` <span class="warning">[FEATURED]</span>` : '';
+                    output += `  📁 <span class="highlight">${p.displayName}</span>${live}${feat}\n`;
+                    output += `     <span class="muted">${p.language} • [${p.category}] • ${p.description.substring(0, 85)}...</span>\n\n`;
                 });
                 break;
 
             // ──── experience ────
             case 'experience':
-                output = `\n<span class="highlight">Work Experience:</span>\n\n`;
+                output = `\n<span class="highlight">Work Experience & Internships:</span>\n\n`;
                 experience.forEach((e) => {
                     output += `  <span class="success">${e.role}</span>\n`;
                     output += `  <span class="highlight">${e.company}</span> • <span class="muted">${e.location}</span>\n`;
@@ -399,11 +565,13 @@ ${profile.summary}
             // ──── contact ────
             case 'contact':
                 output = `
-<span class="highlight">Contact Information:</span>
+<span class="highlight">Contact & Connect Information:</span>
 
   📧 Email:    <span class="success">${profile.email}</span>
   🔗 LinkedIn: <span class="highlight">${profile.linkedin}</span>
   🐙 GitHub:   <span class="highlight">${profile.github}</span>
+  𝕏  X/Twitter:<span class="highlight">${profile.x}</span>
+  📍 Location: <span class="muted">${profile.location}</span>
 `;
                 break;
 
@@ -440,7 +608,7 @@ ${profile.summary}
                         output += `  <span class="highlight">📁 ${name}/</span>\n`;
                     } else {
                         const ext = name.split('.').pop();
-                        const icon = ext === 'txt' ? '📄' : ext === 'json' ? '📋' : ext === 'md' ? '📝' : ext === 'pdf' ? '📕' : '📄';
+                        const icon = ext === 'txt' ? '📄' : ext === 'json' ? '📋' : ext === 'md' ? '📝' : ext === 'pdf' ? '📕' : ext === 'conf' || ext === 'log' ? '⚙️' : '📄';
                         output += `  <span class="muted">${icon} ${name}</span>\n`;
                     }
                 });
@@ -540,7 +708,7 @@ ${profile.summary}
 
             // ──── uptime ────
             case 'uptime':
-                output = `<span class="muted"> ${new Date().toLocaleTimeString()}  up since 2024,  1 user,  load average: 0.42, 0.38, 0.35</span>`;
+                output = `<span class="muted"> ${new Date().toLocaleTimeString()}  up since 2024,  1 user,  load average: 0.12, 0.28, 0.35</span>`;
                 break;
 
             // ──── open ────
@@ -552,10 +720,12 @@ ${profile.summary}
                 } else if (target === 'linkedin') {
                     window.open(profile.linkedin, '_blank');
                     output = `<span class="success">Opening LinkedIn profile...</span>`;
+                } else if (target === 'x' || target === 'twitter') {
+                    window.open(profile.x, '_blank');
+                    output = `<span class="success">Opening X / Twitter profile...</span>`;
                 } else if (target === 'resume') {
                     output = `<span class="success">Opening Resume app on desktop...</span>`;
                 } else {
-                    // Check if it's a project name
                     const proj = projects.find(
                         (p) => p.name.toLowerCase() === target || p.displayName.toLowerCase().includes(target)
                     );
@@ -566,7 +736,7 @@ ${profile.summary}
                         window.open(proj.githubUrl, '_blank');
                         output = `<span class="success">Opening ${proj.displayName} on GitHub...</span>`;
                     } else {
-                        output = `<span class="error">open: '${target}' not found. Try: github, linkedin, or a project name</span>`;
+                        output = `<span class="error">open: '${target}' not found. Try: github, linkedin, x, or a project name</span>`;
                     }
                 }
                 break;
@@ -589,72 +759,66 @@ ${profile.summary}
 <span class="highlight">📧 ${profile.email}</span>
 <span class="highlight">🔗 ${profile.linkedin}</span>
 <span class="highlight">🐙 ${profile.github}</span>
+<span class="highlight">𝕏  ${profile.x}</span>
 
-<span class="muted">I'm actively looking for internships & collaborations!</span>
-<span class="muted">Let's build something amazing together. 🚀</span>
+<span class="muted">Actively open to Cybersecurity, Pentesting & AI Internships/Opportunities!</span>
+<span class="muted">"Build. Break. Understand. Secure." 🛡️</span>
 `;
                 } else if (sudoCmd === 'rm -rf /') {
-                    output = `<span class="error">Nice try 😏 Permission denied. This OS is indestructible.</span>`;
+                    output = `<span class="error">Nice try 😏 Permission denied. Root filesystem is protected by hardened SELinux policies.</span>`;
                 } else if (sudoCmd === 'su' || sudoCmd === 'su root') {
-                    output = `<span class="error">root access denied — you're already the boss here 😎</span>`;
+                    output = `<span class="error">root access granted to shreenath (uid=0). Welcome, commander.</span>`;
                 } else {
-                    output = `<span class="warning">[sudo] password for shreenath: ******\n</span><span class="error">shreenath is not in the sudoers file. This incident will be reported 🚨</span>`;
+                    output = `<span class="muted">[sudo] password for shreenath: ********\nExecuted: ${sudoCmd}</span>`;
                 }
                 break;
             }
 
             // ──── apt ────
             case 'apt': {
-                if (args[0] === 'install' && args[1]) {
-                    const pkg = args[1].toLowerCase();
-                    if (APT_PACKAGES[pkg]) {
+                if (args[0] === 'install') {
+                    const pkg = args[1]?.toLowerCase();
+                    if (!pkg) {
+                        output = `<span class="error">apt: missing package name</span>\n<span class="muted">Try: apt install burpsuite | nmap | wireshark | react</span>`;
+                    } else if (APT_PACKAGES[pkg]) {
                         output = `<span class="muted">Reading package lists... Done
 Building dependency tree... Done
-Reading state information... Done</span>
-<span class="success">The following NEW packages will be installed:</span>
-  ${APT_PACKAGES[pkg]}
-<span class="muted">0 upgraded, 1 newly installed, 0 to remove.
-Need to get 42.0 MB of archives.
-After this operation, 128 MB of additional disk space will be used.</span>
-<span class="success">Setting up ${pkg} (${APT_PACKAGES[pkg]}) ...
-✓ ${APT_PACKAGES[pkg]} installed successfully!</span>`;
+The following NEW packages will be installed:
+  ${pkg}
+Setting up ${APT_PACKAGES[pkg]}...</span>
+<span class="success">Done! ${APT_PACKAGES[pkg]} installed successfully. ✓</span>`;
                     } else {
                         output = `<span class="error">E: Unable to locate package ${pkg}</span>
-<span class="muted">Try: apt install ${Object.keys(APT_PACKAGES).slice(0, 5).join(', ')}</span>`;
+<span class="muted">Available: ${Object.keys(APT_PACKAGES).join(', ')}</span>`;
                     }
                 } else if (args[0] === 'list') {
                     output = `<span class="highlight">Available packages:</span>\n\n`;
                     Object.entries(APT_PACKAGES).forEach(([k, v]) => {
-                        output += `  <span class="success">${k.padEnd(20)}</span> <span class="muted">${v}</span>\n`;
+                        output += `  <span class="success">${k.padEnd(16)}</span> <span class="muted">${v}</span>\n`;
                     });
-                } else if (args[0] === 'update') {
-                    output = `<span class="muted">Hit:1 https://packages.shreeos.dev stable InRelease
-Get:2 https://security.shreeos.dev stable-security InRelease
-Get:3 https://packages.shreeos.dev stable/main amd64 Packages [12.4 MB]</span>
-<span class="success">All packages are up to date.</span>`;
                 } else {
-                    output = `<span class="muted">Usage: apt [install|update|list] [package]</span>`;
+                    output = `<span class="muted">Usage: apt install [package] | apt list</span>`;
                 }
                 break;
             }
 
             // ──── pip ────
-            case 'pip':
-            case 'pip3': {
-                if (args[0] === 'install' && args[1]) {
-                    const pkg = args[1].toLowerCase();
-                    if (PIP_PACKAGES[pkg]) {
-                        output = `<span class="muted">Collecting ${pkg}
-  Downloading ${pkg}-latest.tar.gz (4.2 MB)
-  Installing build dependencies... done
-  Building wheel... done</span>
+            case 'pip': {
+                if (args[0] === 'install') {
+                    const pkg = args[1]?.toLowerCase();
+                    if (!pkg) {
+                        output = `<span class="error">pip: missing package name</span>\n<span class="muted">Try: pip install focusorm | onyx | scapy</span>`;
+                    } else if (PIP_PACKAGES[pkg]) {
+                        output = `<span class="muted">Collecting ${pkg}...
+  Downloading ${pkg}... (100%)
+  Installing collected packages: ${pkg}</span>
 <span class="success">Successfully installed ${PIP_PACKAGES[pkg]} ✓</span>`;
                     } else {
                         output = `<span class="error">ERROR: No matching distribution found for ${pkg}</span>
-<span class="muted">Try: pip install ${Object.keys(PIP_PACKAGES).slice(0, 4).join(', ')}</span>`;
+<span class="muted">Try: pip install ${Object.keys(PIP_PACKAGES).join(', ')}</span>`;
                     }
                 } else if (args[0] === 'list') {
-                    output = `<span class="highlight">Installed packages:</span>\n\n`;
+                    output = `<span class="highlight">Installed Python packages:</span>\n\n`;
                     Object.entries(PIP_PACKAGES).forEach(([k, v]) => {
                         output += `  <span class="success">${k.padEnd(16)}</span> <span class="muted">${v}</span>\n`;
                     });
@@ -675,7 +839,7 @@ Get:3 https://packages.shreeos.dev stable/main amd64 Packages [12.4 MB]</span>
 
             // ──── cowsay ────
             case 'cowsay': {
-                const text = args.length > 0 ? args.join(' ') : 'Moo! Hire Shreenath!';
+                const text = args.length > 0 ? args.join(' ') : 'Build. Break. Understand. Secure.';
                 const line = '_'.repeat(text.length + 2);
                 output = `
  ${line}
@@ -698,18 +862,17 @@ Get:3 https://packages.shreeos.dev stable/main amd64 Packages [12.4 MB]</span>
             case 'man': {
                 const manCmd = args[0]?.toLowerCase();
                 const manPages: Record<string, string> = {
-                    ls: 'ls - list directory contents\n\n  Usage: ls [-a] [path]\n\n  -a    Show hidden files (dotfiles)\n\n  Lists files and directories in the current or specified path.',
-                    cd: 'cd - change directory\n\n  Usage: cd [path]\n\n  cd          Go to home (~)\n  cd ..       Go up one level\n  cd path     Go to path\n  cd /        Go to root',
-                    cat: 'cat - concatenate and print files\n\n  Usage: cat [file]\n\n  Displays the contents of a file.',
-                    tree: 'tree - display directory tree\n\n  Usage: tree [path]\n\n  Shows a tree view of the directory structure (max depth 3).',
-                    open: 'open - open URLs and projects\n\n  Usage: open [target]\n\n  open github      Open GitHub profile\n  open linkedin    Open LinkedIn\n  open [project]   Open project live demo',
-                    sudo: 'sudo - execute with superpowers\n\n  Usage: sudo [command]\n\n  sudo hire-me     The most important command 😏',
-                    apt: 'apt - package manager\n\n  Usage: apt [install|update|list] [package]\n\n  Simulated package manager for Shree\'s OS.',
+                    ls: 'ls - list directory contents\n\n  Usage: ls [-a] [path]\n\n  -a    Show hidden files (dotfiles)',
+                    cd: 'cd - change directory\n\n  Usage: cd [path]',
+                    cat: 'cat - print file contents\n\n  Usage: cat [file]',
+                    security: 'security - display security configuration and domains tree',
+                    achievements: 'achievements - list CTF and competition accomplishments',
+                    tree: 'tree - display directory tree hierarchy',
+                    open: 'open - open URLs, profiles, and projects',
+                    sudo: 'sudo - execute with elevated permissions',
                 };
                 if (manCmd && manPages[manCmd]) {
                     output = `\n<span class="highlight">MANUAL: ${manCmd}</span>\n\n<span class="muted">${manPages[manCmd]}</span>\n`;
-                } else if (manCmd) {
-                    output = `<span class="error">No manual entry for '${manCmd}'</span>`;
                 } else {
                     output = `<span class="muted">Usage: man [command]</span>`;
                 }
@@ -723,7 +886,7 @@ Get:3 https://packages.shreeos.dev stable/main amd64 Packages [12.4 MB]</span>
 
             // ──── unknown ────
             default:
-                output = `<span class="error">bash: ${cmd}: command not found</span>\n<span class="muted">Type <span class="highlight">help</span> for available commands, or try <span class="highlight">apt install ${cmd}</span></span>`;
+                output = `<span class="error">bash: ${cmd}: command not found</span>\n<span class="muted">Type <span class="highlight">help</span> for available commands, or explore with <span class="highlight">ls</span></span>`;
         }
 
         setLines((prev) => [
@@ -737,7 +900,6 @@ Get:3 https://packages.shreeos.dev stable/main amd64 Packages [12.4 MB]</span>
     const handleTab = () => {
         const parts = currentInput.trimEnd().split(/\s+/);
 
-        // Autocomplete file/dir names if cd, cat, ls, tree
         if (['cd', 'cat', 'ls', 'tree', 'open'].includes(parts[0]?.toLowerCase()) && parts.length >= 2) {
             const partial = parts[parts.length - 1];
             const dirParts = partial.includes('/') ? normalizePath(cwd, partial.substring(0, partial.lastIndexOf('/'))) : cwd;
@@ -751,7 +913,6 @@ Get:3 https://packages.shreeos.dev stable/main amd64 Packages [12.4 MB]</span>
                     if (matchNode.type === 'dir') parts[parts.length - 1] += '/';
                     setCurrentInput(parts.join(' '));
                 } else if (matches.length > 1) {
-                    // Show all matches
                     setLines((prev) => [
                         ...prev,
                         { type: 'input', content: currentInput },
@@ -762,7 +923,6 @@ Get:3 https://packages.shreeos.dev stable/main amd64 Packages [12.4 MB]</span>
             return;
         }
 
-        // Autocomplete commands
         if (parts.length <= 1) {
             const partial = (parts[0] || '').toLowerCase();
             const matches = ALL_COMMANDS.filter((c) => c.startsWith(partial));
@@ -773,23 +933,6 @@ Get:3 https://packages.shreeos.dev stable/main amd64 Packages [12.4 MB]</span>
                     ...prev,
                     { type: 'input', content: currentInput },
                     { type: 'output', content: matches.map((m) => `  <span class="success">${m}</span>`).join('  ') },
-                ]);
-            }
-        }
-
-        // Autocomplete apt/pip packages
-        if ((parts[0] === 'apt' || parts[0] === 'pip') && parts[1] === 'install' && parts.length === 3) {
-            const partial = parts[2].toLowerCase();
-            const pkgs = parts[0] === 'apt' ? APT_PACKAGES : PIP_PACKAGES;
-            const matches = Object.keys(pkgs).filter((k) => k.startsWith(partial));
-            if (matches.length === 1) {
-                parts[2] = matches[0];
-                setCurrentInput(parts.join(' '));
-            } else if (matches.length > 1) {
-                setLines((prev) => [
-                    ...prev,
-                    { type: 'input', content: currentInput },
-                    { type: 'output', content: matches.map((m) => `  <span class="highlight">${m}</span>`).join('  ') },
                 ]);
             }
         }
@@ -830,42 +973,37 @@ Get:3 https://packages.shreeos.dev stable/main amd64 Packages [12.4 MB]</span>
 
     // ────── NEOFETCH RENDERER ──────
     const renderNeofetch = () => {
-        const ascii = `         /\\
-        /  \\
-       /\\   \\
-      /      \\
-     /   ,,   \\
-    /   |  |  -\\
-   /_-''    ''-_\\`;
+        const ascii = `  ┌─────────────────────────────────────────┐
+  │  shreenath@github ~ $                   │
+  ├─────────────────────────────────────────┤
+  │                                         │
+  │  shreenath@github                       │
+  │  ──────────────────────────             │
+  │  OS:       Windows 11 / Linux / Android │
+  │  Host:     SELF                         │
+  │  Shell:    Bash / PowerShell / Zsh      │
+  │  Role:     Web Pentester                │
+  │  Focus:    Offensive Security           │
+  │  Security: CTF · Web · API · OSINT      │
+  │  CTF Rank: India #1 / Global #77 (SAS)  │
+  │  AI:       Privacy-first · Automation   │
+  │  Status:   ● Building & Learning        │
+  │                                         │
+  │  Languages:                             │
+  │  Python · JavaScript · HTML · CSS       │
+  │                                         │
+  │  Tools:                                 │
+  │  Burp Suite · Nmap · Wireshark          │
+  │                                         │
+  └─────────────────────────────────────────┘`;
 
         return (
-            <div className="neofetch">
-                <pre className="neofetch-ascii">{ascii}</pre>
-                <div className="neofetch-info">
-                    <div>
-                        <span className="label">shreenath</span>
-                        <span className="separator">@</span>
-                        <span className="label">portfolio</span>
-                    </div>
-                    <div style={{ borderBottom: '1px solid var(--border-color)', margin: '4px 0 6px', width: '200px' }} />
-                    <div><span className="label">OS</span>: Shree's OS v2.0.26 LTS</div>
-                    <div><span className="label">Host</span>: Portfolio v2.0</div>
-                    <div><span className="label">Kernel</span>: React 19.0 / TypeScript</div>
-                    <div><span className="label">Uptime</span>: BTech CSE 2024-2028</div>
-                    <div><span className="label">Packages</span>: {projects.length} (github)</div>
-                    <div><span className="label">Shell</span>: bash 5.2.26</div>
-                    <div><span className="label">DE</span>: Vite Desktop Environment</div>
-                    <div><span className="label">WM</span>: React Window Manager</div>
-                    <div><span className="label">Theme</span>: Catppuccin Mocha [Dark]</div>
-                    <div><span className="label">Terminal</span>: shree-terminal</div>
-                    <div><span className="label">CPU</span>: Full Stack Developer @ Todwal</div>
-                    <div><span className="label">GPU</span>: Web3 / Blockchain / Three.js</div>
-                    <div><span className="label">Memory</span>: Robotics + IoT + AI</div>
-                    <div className="neofetch-colors">
-                        {['#f38ba8', '#fab387', '#f9e2af', '#a6e3a1', '#89b4fa', '#cba6f7', '#f5c2e7', '#94e2d5'].map((c) => (
-                            <div key={c} className="neofetch-color" style={{ background: c }} />
-                        ))}
-                    </div>
+            <div className="neofetch" style={{ flexDirection: 'column' }}>
+                <pre className="neofetch-ascii" style={{ fontSize: '11.5px', color: 'var(--accent-primary)' }}>{ascii}</pre>
+                <div className="neofetch-colors" style={{ marginTop: 10 }}>
+                    {['#f38ba8', '#fab387', '#f9e2af', '#a6e3a1', '#89b4fa', '#cba6f7', '#f5c2e7', '#94e2d5'].map((c) => (
+                        <div key={c} className="neofetch-color" style={{ background: c }} />
+                    ))}
                 </div>
             </div>
         );
