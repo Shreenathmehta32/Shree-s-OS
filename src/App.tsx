@@ -6,6 +6,7 @@ import { AboutMe } from './components/apps/AboutMe';
 import { ContactApp } from './components/apps/ContactApp';
 import { SkillsApp } from './components/apps/SkillsApp';
 import { ResumeApp } from './components/apps/ResumeApp';
+import { AchievementsApp } from './components/apps/AchievementsApp';
 import { WallpaperPicker } from './components/WallpaperPicker';
 import { MobileLayout } from './components/MobileLayout';
 import { wallpapers } from './data/wallpapers';
@@ -39,12 +40,14 @@ const BOOT_LOGS = [
   '[  OK  ] Mounting TypeScript compiler...',
   '[  OK  ] Starting Vite Desktop Environment...',
   '[ INFO ] Loading user profile: shreenath@portfolio',
-  '[  OK  ] Loading GitHub repositories (14 repos)...',
+  '[  OK  ] Initializing Offensive Security Modules (Burp, Nmap, Wireshark)...',
+  '[  OK  ] Loading GitHub repositories (22 repos)...',
+  '[ INFO ] SAS CTF 2026: India Rank #1 / Global Rank #77',
   '[  OK  ] Initializing window manager...',
   '[ INFO ] Detected display: 1920x1080',
   '[  OK  ] Loading Catppuccin Mocha theme...',
   '[ WARN ] Creativity levels: MAXIMUM',
-  '[  OK  ] Starting portfolio services...',
+  '[  OK  ] Starting portfolio & security services...',
   '[  OK  ] All systems operational.',
   '',
   'ShreeOS 2.0.26 LTS \\n \\l',
@@ -52,13 +55,14 @@ const BOOT_LOGS = [
   'portfolio login: shreenath',
   'Password: ********',
   'Last login: ' + new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-  'Welcome back, Shreenath! 🚀',
+  'Welcome back, Shreenath! 🚀 [Mission: Build. Break. Understand. Secure.]',
 ];
 
 const desktopIcons = [
   { id: 'terminal', icon: '🖥️', label: 'Terminal' },
   { id: 'files', icon: '📁', label: 'Projects' },
   { id: 'about', icon: '👤', label: 'About Me' },
+  { id: 'achievements', icon: '🏆', label: 'Achievements' },
   { id: 'skills', icon: '📊', label: 'Skills' },
   { id: 'resume', icon: '📄', label: 'Resume' },
   { id: 'contact', icon: '📬', label: 'Contact' },
@@ -166,10 +170,12 @@ const WallpaperLayer: React.FC<{ id: string }> = ({ id }) => {
 
 // ---- Typing Animation ----
 const TYPING_TEXTS = [
+  'Web Pentester & Security Builder',
+  'Offensive Security Researcher',
+  'SAS CTF 2026 — Rank #1 India 🇮🇳',
+  'Privacy-First AI & Automation',
   'Full Stack Developer',
-  'Robotics Enthusiast',
-  'Web3 Builder',
-  'Open Source Contributor',
+  'Robotics Enthusiast & Webmaster',
   'BTech CSE \'28',
   'Hackathon Winner 🏆',
 ];
@@ -189,9 +195,11 @@ const useTypingAnimation = () => {
       return () => clearTimeout(pause);
     }
     if (deleting && charIndex === 0) {
-      setDeleting(false);
-      setTextIndex((i) => (i + 1) % TYPING_TEXTS.length);
-      return;
+      const pause = setTimeout(() => {
+        setDeleting(false);
+        setTextIndex((i) => (i + 1) % TYPING_TEXTS.length);
+      }, speed);
+      return () => clearTimeout(pause);
     }
 
     const timer = setTimeout(() => {
@@ -215,7 +223,9 @@ const App: React.FC = () => {
     return localStorage.getItem('shreeos-wallpaper') || 'aurora';
   });
   const [showWpPicker, setShowWpPicker] = useState(false);
-  const [visitorCount, setVisitorCount] = useState(0);
+  const [visitorCount, setVisitorCount] = useState(() => {
+    return parseInt(localStorage.getItem('shreeos-visitors') || '0', 10);
+  });
   const typingText = useTypingAnimation();
   const isMobile = useIsMobile();
 
@@ -250,15 +260,12 @@ const App: React.FC = () => {
   useEffect(() => {
     const SESSION_KEY = 'shreeos-session-counted';
     const STORAGE_KEY = 'shreeos-visitors';
-    if (sessionStorage.getItem(SESSION_KEY)) {
-      // Already counted this session — just read the current total
-      setVisitorCount(parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10));
-      return;
+    if (!sessionStorage.getItem(SESSION_KEY)) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      const count = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10) + 1;
+      localStorage.setItem(STORAGE_KEY, String(count));
+      setTimeout(() => setVisitorCount(count), 0);
     }
-    sessionStorage.setItem(SESSION_KEY, '1');
-    const count = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10) + 1;
-    localStorage.setItem(STORAGE_KEY, String(count));
-    setVisitorCount(count);
   }, []);
 
   // Wallpaper persistence
@@ -282,10 +289,13 @@ const App: React.FC = () => {
           win = { id, title: 'Projects — File Manager', icon: '📁', component: <FileManager />, isMinimized: false, isMaximized: false, defaultWidth: 900, defaultHeight: 600 };
           break;
         case 'about':
-          win = { id, title: 'About — Text Editor', icon: '👤', component: <AboutMe />, isMinimized: false, isMaximized: false, defaultWidth: 600, defaultHeight: 450 };
+          win = { id, title: 'About — Text Editor', icon: '👤', component: <AboutMe />, isMinimized: false, isMaximized: false, defaultWidth: 620, defaultHeight: 520 };
+          break;
+        case 'achievements':
+          win = { id, title: 'Achievements — Hall of Fame', icon: '🏆', component: <AchievementsApp />, isMinimized: false, isMaximized: false, defaultWidth: 780, defaultHeight: 560 };
           break;
         case 'skills':
-          win = { id, title: 'Skills — System Monitor', icon: '📊', component: <SkillsApp />, isMinimized: false, isMaximized: false, defaultWidth: 650, defaultHeight: 550 };
+          win = { id, title: 'Skills — System Monitor', icon: '📊', component: <SkillsApp />, isMinimized: false, isMaximized: false, defaultWidth: 680, defaultHeight: 550 };
           break;
         case 'resume':
           win = { id, title: 'Resume — Document Viewer', icon: '📄', component: <ResumeApp />, isMinimized: false, isMaximized: false, defaultWidth: 700, defaultHeight: 600 };

@@ -66,6 +66,13 @@ export const ContactApp: React.FC = () => {
                         <span className="contact-item-value">Shreenathmehta32</span>
                     </div>
                 </a>
+                <a className="contact-item" href={profile.x} target="_blank" rel="noopener noreferrer">
+                    <div className="contact-item-icon x-icon">𝕏</div>
+                    <div className="contact-item-info">
+                        <span className="contact-item-label">X / Twitter</span>
+                        <span className="contact-item-value">@ShreeNm32</span>
+                    </div>
+                </a>
             </div>
 
             {/* Contact Form */}
