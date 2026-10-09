@@ -324,7 +324,11 @@ const FORTUNES = [
 ];
 
 // ═══════════════════════  COMPONENT  ═══════════════════════
-export const Terminal: React.FC = () => {
+export interface TerminalProps {
+    shortcutCommand?: string;
+}
+
+export const Terminal: React.FC<TerminalProps> = ({ shortcutCommand }) => {
     const [lines, setLines] = useState<{ type: 'input' | 'output'; content: string }[]>([
         {
             type: 'output',
@@ -895,6 +899,13 @@ Setting up ${APT_PACKAGES[pkg]}...</span>
             ...(output ? [{ type: 'output' as const, content: output }] : []),
         ]);
     };
+
+    useEffect(() => {
+        if (shortcutCommand) {
+            processCommand(shortcutCommand);
+            inputRef.current?.focus();
+        }
+    }, [shortcutCommand]);
 
     // ────── TAB AUTOCOMPLETE ──────
     const handleTab = () => {
