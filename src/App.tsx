@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Window } from './components/Window';
 import { Terminal } from './components/apps/Terminal';
 import { FileManager } from './components/apps/FileManager';
@@ -9,7 +9,7 @@ import { ResumeApp } from './components/apps/ResumeApp';
 import { AchievementsApp } from './components/apps/AchievementsApp';
 import { WallpaperPicker } from './components/WallpaperPicker';
 import { MobileLayout } from './components/MobileLayout';
-import { wallpapers } from './data/wallpapers';
+import { WallpaperLayer } from './components/WallpaperLayer';
 
 // Auto-detect mobile / tablet (≤1024px)
 const useIsMobile = () => {
@@ -68,105 +68,7 @@ const desktopIcons = [
   { id: 'contact', icon: '📬', label: 'Contact' },
 ];
 
-// ---- Matrix Rain Canvas ----
-const MatrixCanvas: React.FC = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener('resize', resize);
-
-    const fontSize = 14;
-    const cols = Math.floor(canvas.width / fontSize);
-    const drops: number[] = Array(cols).fill(1);
-    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-    let raf: number;
-    const draw = () => {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = chars[Math.floor(Math.random() * chars.length)];
-        // Leading character bright
-        ctx.fillStyle = drops[i] * fontSize > 0 ? '#a0f0a0' : '#00c840';
-        ctx.font = `${fontSize}px Fira Code, monospace`;
-        ctx.fillStyle = i % 3 === 0 ? '#ffffff' : '#00dd44';
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-        drops[i]++;
-      }
-      raf = requestAnimationFrame(draw);
-    };
-
-    draw();
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('resize', resize);
-    };
-  }, []);
-
-  return <canvas ref={canvasRef} className="wp-matrix-canvas" />;
-};
-
-// ---- Wallpaper Renderer ----
-const WallpaperLayer: React.FC<{ id: string }> = ({ id }) => {
-  const wp = wallpapers.find((w) => w.id === id);
-  if (!wp) return null;
-
-  const FIXED: React.CSSProperties = { position: 'fixed', inset: 0, zIndex: 0 };
-
-  switch (id) {
-    case 'aurora':
-      return (
-        <div className="wp-aurora" style={FIXED}>
-          <div className="wp-stars" />
-        </div>
-      );
-    case 'matrix':
-      return (
-        <div className="wp-matrix" style={FIXED}>
-          <MatrixCanvas />
-        </div>
-      );
-    case 'nebula':
-      return <div className="wp-nebula" style={FIXED} />;
-    case 'synthwave':
-      return (
-        <div className="wp-synthwave" style={FIXED}>
-          <div className="wp-sun" />
-          <div className="wp-buildings" />
-        </div>
-      );
-    case 'coderain':
-      return (
-        <div className="wp-cybergrid" style={FIXED}>
-          <div className="wp-scanline" />
-          <div className="wp-hex" />
-        </div>
-      );
-    case 'lava':
-      return (
-        <div className="wp-lava" style={FIXED}>
-          <div className="wp-lava-cracks" />
-        </div>
-      );
-    default:
-      return null;
-  }
-};
+// WallpaperLayer is imported from ./components/WallpaperLayer
 
 // ---- Typing Animation ----
 const TYPING_TEXTS = [
@@ -385,9 +287,15 @@ const App: React.FC = () => {
     );
   }
 
-  // Mobile / tablet — show the dedicated touchable layout
+  // Mobile / tablet — show the dedicated touchable Android layout
   if (isMobile) {
-    return <MobileLayout />;
+    return (
+      <MobileLayout
+        wallpaperId={wallpaperId}
+        onSelectWallpaper={setWallpaperId}
+        visitorCount={visitorCount}
+      />
+    );
   }
 
   return (
