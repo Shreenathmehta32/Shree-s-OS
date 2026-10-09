@@ -36,10 +36,10 @@ export const Window: React.FC<WindowProps> = ({
     onMinimize,
     onMaximize,
 }) => {
-    const [pos, setPos] = useState({
+    const [pos, setPos] = useState(() => ({
         x: defaultX ?? Math.random() * (window.innerWidth - defaultWidth - 100) + 50,
         y: defaultY ?? Math.random() * (window.innerHeight - defaultHeight - 150) + 30,
-    });
+    }));
     const [size, setSize] = useState({ w: defaultWidth, h: defaultHeight });
     const [isDragging, setIsDragging] = useState(false);
     const [isResizing, setIsResizing] = useState(false);

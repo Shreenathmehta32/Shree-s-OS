@@ -2140,70 +2140,570 @@ body {
 }
 
 /* ============================================================
-   MOBILE / TABLET LAYOUT  (≤ 1024px)
+   SHREEDROID / ANDROID MOBILE & TABLET OS (≤ 1024px)
    ============================================================ */
 
+.android-root,
 .mobile-root {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
-  height: 100dvh;
-  background: var(--bg-primary);
-  background-image:
-    radial-gradient(ellipse at 20% 0%, rgba(137, 180, 250, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(203, 166, 247, 0.06) 0%, transparent 50%);
   overflow: hidden;
+  background: #0b0d14;
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  box-sizing: border-box;
 }
 
-/* ── Top Header ── */
-.mobile-header {
+/* Wallpaper layer behind Android UI */
+.android-wallpaper-container {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.android-wallpaper-scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 20%, rgba(17, 24, 39, 0.45) 0%, rgba(11, 13, 20, 0.82) 100%);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+/* ── Android Status Bar ── */
+.android-status-bar {
+  position: relative;
+  z-index: 25;
+  height: 28px;
+  min-height: 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
-  height: 52px;
-  min-height: 52px;
-  background: rgba(24, 24, 37, 0.95);
+  font-size: 12px;
+  font-weight: 600;
+  color: #e2e8f0;
+  background: rgba(11, 13, 20, 0.65);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-color);
-  z-index: 10;
-  flex-shrink: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s ease;
 }
 
-.mobile-header-brand {
+.android-status-bar:active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.android-status-left {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.mobile-header-logo {
+.android-status-time {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.2px;
+  font-weight: 700;
+}
+
+.android-status-pill-badge {
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+}
+
+.android-status-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.android-status-icon {
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.android-status-battery {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 1px 3px;
+  min-width: 34px;
+  height: 14px;
+}
+
+.android-battery-level {
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  bottom: 1px;
+  background: #a6e3a1;
+  border-radius: 2px;
+  z-index: 1;
+}
+
+.android-battery-text {
+  position: relative;
+  z-index: 2;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  width: 100%;
+  text-align: center;
+}
+
+/* ── Android Notification & Quick Settings Shade ── */
+.android-shade-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: androidFadeIn 0.2s ease-out;
+}
+
+@keyframes androidFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.android-shade-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(20, 22, 34, 0.96);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0 0 28px 28px;
+  padding: 8px 18px 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  animation: androidSlideDown 0.28s cubic-bezier(0.1, 0.9, 0.2, 1);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+@keyframes androidSlideDown {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+.android-shade-handle {
+  width: 38px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
+  margin: 6px auto 14px;
+}
+
+.android-shade-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.android-shade-clock {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+.android-shade-date {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.android-shade-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Quick Setting Tiles */
+.android-tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.android-tile {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.android-tile:active {
+  transform: scale(0.96);
+}
+
+.android-tile.active {
+  background: rgba(137, 180, 250, 0.18);
+  border-color: rgba(137, 180, 250, 0.4);
+}
+
+.android-tile-icon {
   font-size: 20px;
 }
 
-.mobile-header-title {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--text-bright);
-  letter-spacing: -0.3px;
+.android-tile-text {
+  overflow: hidden;
 }
 
-.mobile-header-typing {
-  font-family: 'Fira Code', monospace;
-  font-size: 12px;
-  color: var(--accent-secondary);
-  max-width: 50%;
-  overflow: hidden;
+.android-tile-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
   white-space: nowrap;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* ── Content Area ── */
-.mobile-content {
+.android-tile-sub {
+  font-size: 11px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.android-notif-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 10px;
+}
+
+.android-notif-clear {
+  color: var(--accent-primary);
+  cursor: pointer;
+}
+
+.android-notif-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.android-notif-card:active {
+  background: rgba(255, 255, 255, 0.12);
+  transform: scale(0.98);
+}
+
+.android-notif-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.android-notif-body {
   flex: 1;
+  min-width: 0;
+}
+
+.android-notif-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.android-notif-desc {
+  font-size: 11.5px;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.android-notif-badge {
+  font-size: 11px;
+  color: var(--accent-primary);
+  background: rgba(137, 180, 250, 0.12);
+  border: 1px solid rgba(137, 180, 250, 0.25);
+  border-radius: 12px;
+  padding: 3px 8px;
+  font-weight: 600;
+}
+
+/* ── Android Home Screen Launcher ── */
+.android-launcher {
+  flex: 1;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px 18px 12px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  padding-bottom: 4px;
+}
+
+/* At a Glance Widget */
+.android-glance-widget {
+  padding: 14px 4px 6px;
+}
+
+.android-glance-date {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.android-glance-typing {
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  color: #89b4fa;
+  margin: 6px 0 10px;
+  min-height: 20px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+}
+
+.android-glance-prompt {
+  color: #a6e3a1;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.android-glance-cursor {
+  animation: blink 1s infinite;
+  color: #fab387;
+  font-weight: 700;
+}
+
+.android-glance-sub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.android-glance-badge {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+/* Search capsule */
+.android-search-bar {
+  height: 48px;
+  background: rgba(20, 24, 38, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  margin: 12px 0 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.android-search-logo {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.android-search-pill-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 13.5px;
+}
+
+.android-search-pill-input::placeholder {
+  color: #94a3b8;
+}
+
+.android-search-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* Android App Icons Grid */
+.android-apps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px 8px;
+  padding: 6px 0 20px;
+  justify-items: center;
+}
+
+@media (min-width: 600px) {
+  .android-apps-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px 12px;
+  }
+}
+
+.android-app-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.android-app-item:active {
+  transform: scale(0.88);
+}
+
+.android-app-icon-squircle {
+  width: 58px;
+  height: 58px;
+  border-radius: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.android-app-item:hover .android-app-icon-squircle {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(137, 180, 250, 0.35);
+}
+
+.android-app-icon-glyph {
+  font-size: 28px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.android-app-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #f38ba8;
+  color: #11111b;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  letter-spacing: -0.2px;
+}
+
+.android-app-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #f1f5f9;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  text-align: center;
+  max-width: 68px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Pinned Dock */
+.android-dock-shelf {
+  margin-top: auto;
+  background: rgba(20, 24, 38, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 30px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.android-dock-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.android-dock-app:active {
+  transform: scale(0.86);
+}
+
+.android-dock-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.android-dock-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: #f1f5f9;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 .mobile-section {
@@ -2425,63 +2925,546 @@ body {
   transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ── Bottom Tab Bar ── */
-.mobile-tabbar {
-  display: flex;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 72px;
-  background: rgba(24, 24, 37, 0.97);
+/* ── Android 3-Button Nav Bar ── */
+.android-nav-bar {
+  position: relative;
+  z-index: 25;
+  height: 48px;
+  min-height: 48px;
+  background: rgba(11, 13, 20, 0.9);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-top: 1px solid var(--border-color);
-  z-index: 10;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-.mobile-tab {
+.android-nav-btn {
+  color: rgba(255, 255, 255, 0.7);
+  background: none;
+  border: none;
+  padding: 10px 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s, color 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.android-nav-btn:active {
+  transform: scale(0.8);
+  color: #ffffff;
+}
+
+/* ── Fullscreen Android App Window ── */
+.android-app-window {
+  position: absolute;
+  inset: 0;
+  top: 28px; /* below status bar */
+  bottom: 48px; /* above nav bar */
+  z-index: 20;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: androidAppOpen 0.24s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+@keyframes androidAppOpen {
+  from {
+    opacity: 0;
+    transform: scale(0.93) translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.android-app-header {
+  height: 52px;
+  min-height: 52px;
+  background: rgba(24, 24, 37, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  z-index: 5;
+}
+
+.android-app-back-btn {
+  background: none;
+  border: none;
+  color: var(--text-bright);
+  font-size: 20px;
+  cursor: pointer;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.android-app-back-btn:active {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(0.92);
+}
+
+.android-app-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  margin-left: 6px;
+}
+
+.android-app-header-icon {
+  font-size: 20px;
+}
+
+.android-app-header-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.android-app-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.android-app-action-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.android-app-action-btn:active {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-bright);
+}
+
+.android-app-scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.android-app-body {
+  padding-bottom: 30px;
+}
+
+/* Elevated Android Cards */
+.android-elevated {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Hero card with avatar badge */
+.android-hero-card {
+  padding: 20px 0 16px;
+}
+
+.android-hero-avatar-wrap {
+  position: relative;
+  width: 80px;
+  margin: 0 auto 14px;
+}
+
+.android-avatar-badge {
+  position: absolute;
+  bottom: 0;
+  right: -2px;
+  font-size: 18px;
+  background: #1e1e2e;
+  border-radius: 50%;
+  padding: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* In-App search container */
+.android-search-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-window);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0 12px;
+  margin-bottom: 14px;
+  height: 44px;
+}
+
+.android-search-icon {
+  font-size: 15px;
+  color: var(--text-muted);
+}
+
+.android-search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-bright);
+  font-size: 13.5px;
+}
+
+.android-search-clear {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.android-results-counter {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+/* Gold Banner */
+.android-banner-gold {
+  background: linear-gradient(135deg, rgba(249, 226, 175, 0.15) 0%, rgba(250, 179, 135, 0.1) 100%);
+  border: 1px solid rgba(249, 226, 175, 0.35);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.android-banner-icon {
+  font-size: 36px;
+}
+
+.android-banner-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #f9e2af;
+  margin-bottom: 2px;
+}
+
+.android-banner-sub {
+  font-size: 12px;
+  color: #e2e8f0;
+}
+
+/* Resume Hero */
+.android-resume-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-window);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+
+.android-resume-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.android-resume-sub {
+  font-size: 12.5px;
+  color: var(--accent-primary);
+  margin-top: 2px;
+}
+
+.android-fab-btn {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-mauve));
+  color: #11111b;
+  font-weight: 700;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 12.5px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(137, 180, 250, 0.3);
+}
+
+.android-reset-btn {
+  display: block;
+  margin-top: 8px;
+  background: none;
+  border: 1px solid var(--accent-primary);
+  color: var(--accent-primary);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* ── Wallpaper Personalization Grid ── */
+.android-card-header-note {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.android-wallpaper-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.android-wp-card {
+  background: var(--bg-window);
+  border: 2px solid var(--border-color);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.android-wp-card:active {
+  transform: scale(0.96);
+}
+
+.android-wp-card.active {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 16px rgba(137, 180, 250, 0.35);
+}
+
+.android-wp-preview {
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.android-wp-active-check {
+  background: rgba(166, 227, 161, 0.9);
+  color: #11111b;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.android-wp-name {
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-bright);
+  text-align: center;
+}
+
+/* ── Android Termux Wrapper ── */
+.android-termux-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - 28px - 52px - 48px);
+  overflow: hidden;
+}
+
+.android-termux-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #181825;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  flex-shrink: 0;
+}
+
+.android-termux-tag {
+  font-size: 10px;
+  font-family: 'Fira Code', monospace;
+  font-weight: 700;
+  color: #a6e3a1;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+
+.android-key-btn {
+  background: #313244;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cdd6f4;
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.1s;
+}
+
+.android-key-btn:active {
+  background: #89b4fa;
+  color: #11111b;
+  transform: scale(0.92);
+}
+
+.android-termux-body {
+  flex: 1;
+  overflow: hidden;
+}
+
+.android-termux-body .terminal {
+  height: 100%;
+  border-radius: 0;
+  border: none;
+}
+
+/* ── Android Recents Multitasking ── */
+.android-recents-container {
+  position: absolute;
+  inset: 0;
+  top: 28px;
+  bottom: 48px;
+  z-index: 20;
+  background: rgba(11, 13, 20, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  animation: androidFadeIn 0.2s ease-out;
+}
+
+.android-recents-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 18px;
+}
+
+.android-recents-clear-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 16px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.android-recents-empty {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  color: #94a3b8;
+  gap: 10px;
+}
+
+.android-recents-deck {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 4px 20px;
+  align-items: center;
+}
+
+.android-recent-card {
+  min-width: 230px;
+  width: 230px;
+  height: 340px;
+  background: var(--bg-window);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.android-recent-card:active {
+  transform: scale(0.97);
+}
+
+.android-recent-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: rgba(24, 24, 37, 0.95);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.android-recent-card-identity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.android-recent-icon {
+  font-size: 18px;
+}
+
+.android-recent-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.android-recent-close {
   background: none;
   border: none;
+  color: #94a3b8;
+  font-size: 14px;
   cursor: pointer;
-  padding: 8px 4px;
-  transition: var(--transition-fast);
-  -webkit-tap-highlight-color: transparent;
 }
 
-.mobile-tab:active {
-  transform: scale(0.92);
+.android-recent-card-preview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(17, 24, 39, 0.4);
+  text-align: center;
 }
 
-.mobile-tab-icon {
-  font-size: 22px;
-  line-height: 1;
-  transition: var(--transition-fast);
-}
-
-.mobile-tab-label {
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--text-muted);
-  letter-spacing: 0.3px;
-  transition: var(--transition-fast);
-}
-
-.mobile-tab.active .mobile-tab-icon {
-  filter: drop-shadow(0 0 6px rgba(137, 180, 250, 0.6));
-  transform: translateY(-2px);
-}
-
-.mobile-tab.active .mobile-tab-label {
+.android-recent-preview-badge {
+  font-size: 13px;
+  font-weight: 700;
   color: var(--accent-primary);
-  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.android-recent-preview-desc {
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
 /* GitHub stats inside mobile layout */
@@ -2492,23 +3475,6 @@ body {
 /* Resume app in mobile — no left padding assumption */
 .mobile-section .resume-download-bar {
   margin-bottom: 16px;
-}
-
-/* ── Mobile Terminal ── */
-.mobile-terminal-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: calc(100dvh - 52px - 72px);
-  /* viewport - header - tabbar */
-  overflow: hidden;
-}
-
-.mobile-terminal-wrapper .terminal {
-  flex: 1;
-  border-radius: 0;
-  border: none;
-  height: 100%;
-  font-size: 13px;
 }
 
 /* ── GitHub Contribution Graph ── */
@@ -2671,4 +3637,962 @@ body {
   background: var(--bg-secondary);
   border-radius: 8px;
   border: 1px solid var(--border-color);
+}
+
+/* ===================== ACHIEVEMENTS APP ===================== */
+.achievements-app {
+  padding: 24px;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.achievements-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.achievements-title-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.achievements-icon {
+  font-size: 32px;
+}
+
+.achievements-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.achievements-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* CTF Spotlight Banner */
+.ctf-spotlight-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(24, 24, 37, 0.95), rgba(30, 30, 46, 0.95));
+  border: 1px solid rgba(249, 226, 175, 0.35);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(249, 226, 175, 0.05);
+  overflow: hidden;
+}
+
+.ctf-spotlight-glow {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(249, 226, 175, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ctf-spotlight-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.ctf-badge-pulse {
+  background: linear-gradient(90deg, #f9e2af, #fab387);
+  color: #11111b;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 12px rgba(249, 226, 175, 0.4);
+}
+
+.ctf-badge-global {
+  background: rgba(137, 180, 250, 0.15);
+  color: var(--accent-primary);
+  border: 1px solid rgba(137, 180, 250, 0.3);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.ctf-year {
+  margin-left: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.ctf-spotlight-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ctf-spotlight-heading {
+  display: flex;
+  gap: 12px;
+}
+
+.ctf-flag-icon {
+  font-size: 26px;
+}
+
+.ctf-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.ctf-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.ctf-stats-row {
+  display: flex;
+  gap: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ctf-stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.ctf-stat-num {
+  font-family: 'Fira Code', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent-tertiary);
+}
+
+.ctf-stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Filter bar */
+.achievements-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.achieve-filter-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.achieve-filter-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-active);
+}
+
+.achieve-filter-btn.active {
+  background: rgba(137, 180, 250, 0.15);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+/* Achievements Grid */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 14px;
+}
+
+.achievement-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: var(--transition-normal);
+}
+
+.achievement-card:hover {
+  border-color: var(--accent-tertiary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.achievement-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.achievement-icon-box {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.achievement-card-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.achievement-year-badge {
+  font-family: 'Fira Code', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.achievement-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-bright);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.achievement-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  background: rgba(249, 226, 175, 0.15);
+  color: var(--accent-tertiary);
+  border: 1px solid rgba(249, 226, 175, 0.3);
+  border-radius: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.achievement-highlight {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-secondary);
+}
+
+.achievement-description {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.achievement-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.achievement-pill {
+  font-size: 10px;
+  padding: 2px 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+  border-radius: 4px;
+  font-family: 'Fira Code', monospace;
+}
+
+/* ===================== ABOUT ME ENHANCEMENTS ===================== */
+.about-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.about-role-pill {
+  font-size: 11px;
+  padding: 2px 8px;
+  background: rgba(166, 227, 161, 0.12);
+  color: var(--accent-secondary);
+  border: 1px solid rgba(166, 227, 161, 0.25);
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.about-mission-banner {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--accent-secondary);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Fira Code', monospace;
+}
+
+.mission-label {
+  color: var(--accent-primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mission-text {
+  color: var(--text-bright);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.about-ctf-highlight {
+  background: linear-gradient(135deg, rgba(30, 30, 46, 0.9), rgba(24, 24, 37, 0.9));
+  border: 1px solid rgba(249, 226, 175, 0.3);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+
+.about-ctf-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  background: rgba(249, 226, 175, 0.2);
+  color: var(--accent-tertiary);
+  border-radius: 6px;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.about-ctf-content {
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.about-ctf-content .highlight-gold {
+  color: var(--accent-tertiary);
+  font-weight: 700;
+}
+
+.about-ctf-content p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.about-section {
+  margin-top: 24px;
+}
+
+.about-section-heading {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent-primary);
+  font-weight: 700;
+  margin-bottom: 12px;
+  font-family: 'Fira Code', monospace;
+}
+
+.current-work-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.current-work-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: var(--transition-fast);
+}
+
+.current-work-item:hover {
+  border-color: var(--accent-primary);
+  background: var(--bg-tertiary);
+}
+
+.current-work-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.current-work-body {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+
+.current-work-label {
+  color: var(--accent-secondary);
+  font-family: 'Fira Code', monospace;
+  font-weight: 600;
+}
+
+.current-work-val {
+  color: var(--text-primary);
+}
+
+.about-roles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.about-role-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.about-role-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.about-role-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.about-role-org {
+  font-size: 11px;
+  color: var(--accent-primary);
+}
+
+.about-role-type {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: 'Fira Code', monospace;
+}
+
+.about-role-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.about-social-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.about-social-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  transition: var(--transition-fast);
+}
+
+.about-social-btn:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.about-social-btn.x-btn:hover {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+/* ===================== FILE MANAGER ENHANCEMENTS ===================== */
+.file-manager-search {
+  padding: 5px 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-family: inherit;
+  outline: none;
+  min-width: 180px;
+  flex: 1;
+  max-width: 280px;
+}
+
+.file-manager-search:focus {
+  border-color: var(--accent-primary);
+}
+
+.file-manager-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: 'Fira Code', monospace;
+  white-space: nowrap;
+}
+
+.file-manager-categories {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--bg-titlebar);
+  border-bottom: 1px solid var(--border-color);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.fm-category-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition-fast);
+}
+
+.fm-category-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+}
+
+.fm-category-btn.active {
+  background: var(--bg-secondary);
+  color: var(--accent-primary);
+  border-color: var(--border-color);
+  font-weight: 600;
+}
+
+.project-card.featured {
+  border-color: rgba(249, 226, 175, 0.4);
+  box-shadow: 0 0 16px rgba(249, 226, 175, 0.05);
+}
+
+.project-card-title-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.project-featured-badge {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--accent-tertiary);
+  letter-spacing: 0.5px;
+}
+
+.file-manager-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* ===================== SKILLS APP ENHANCEMENTS ===================== */
+.skills-nav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skills-view-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.skills-toggle-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.skills-toggle-btn.active {
+  background: rgba(137, 180, 250, 0.15);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+.security-domains-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.security-tree-block {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.security-tree-ascii {
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  color: var(--accent-secondary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.security-domains-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.security-domain-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.security-domain-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-primary);
+  margin-bottom: 6px;
+}
+
+.security-domain-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ===================== RESUME ENHANCEMENTS ===================== */
+.resume-achievements-list,
+.resume-roles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.resume-achievement-card,
+.resume-role-card {
+  padding: 14px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+}
+
+.resume-achievement-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.resume-achieve-icon {
+  font-size: 18px;
+}
+
+.resume-achieve-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.resume-achieve-year {
+  margin-left: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.resume-achieve-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-secondary);
+  margin: 4px 0;
+}
+
+.resume-achieve-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.resume-role-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.resume-role-org {
+  font-size: 12px;
+  color: var(--accent-primary);
+  margin: 2px 0 6px;
+}
+
+.resume-role-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ===================== CONTACT APP ENHANCEMENTS ===================== */
+.contact-item-icon.x-icon {
+  background: #000000;
+  color: #ffffff;
+  border: 1px solid #333333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* ===================== MOBILE ENHANCEMENTS ===================== */
+.mobile-role-pill {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 10px;
+  background: rgba(166, 227, 161, 0.12);
+  color: var(--accent-secondary);
+  border: 1px solid rgba(166, 227, 161, 0.25);
+  border-radius: 12px;
+  font-weight: 600;
+  margin: 6px 0;
+}
+
+.mobile-mission-banner {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--accent-secondary);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-family: 'Fira Code', monospace;
+}
+
+.mobile-mission-cmd {
+  color: var(--accent-primary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.mobile-mission-val {
+  color: var(--text-bright);
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.mobile-ctf-card {
+  background: linear-gradient(135deg, rgba(24, 24, 37, 0.95), rgba(30, 30, 46, 0.95));
+  border: 1px solid rgba(249, 226, 175, 0.35);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.mobile-ctf-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.mobile-ctf-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--accent-tertiary);
+}
+
+.mobile-ctf-rank {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  background: var(--accent-tertiary);
+  color: #11111b;
+  border-radius: 10px;
+}
+
+.mobile-ctf-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.mobile-ctf-highlight {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-secondary);
+  margin: 2px 0 6px;
+}
+
+.mobile-ctf-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.mobile-work-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.mobile-work-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.mobile-work-icon {
+  font-size: 14px;
+}
+
+.mobile-work-label {
+  color: var(--accent-secondary);
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+}
+
+.mobile-work-val {
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+.mobile-role-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mobile-role-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.mobile-role-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.mobile-role-org {
+  font-size: 11px;
+  color: var(--accent-primary);
+  margin: 2px 0;
+}
+
+.mobile-role-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.mobile-search-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  margin-bottom: 12px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.mobile-search-input:focus {
+  border-color: var(--accent-primary);
+}
+
+.mobile-cat-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 8px;
+}
+
+.mobile-cat-pill {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 16px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.mobile-cat-pill.active {
+  background: rgba(137, 180, 250, 0.15);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+.mobile-project-card.featured {
+  border-color: rgba(249, 226, 175, 0.35);
+}
+
+.mobile-featured-tag {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  background: rgba(249, 226, 175, 0.15);
+  color: var(--accent-tertiary);
+  border-radius: 6px;
+}
+
+.mobile-achieve-year {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.mobile-achieve-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.mobile-achieve-highlight {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-secondary);
+  margin: 3px 0 6px;
+}
+
+.mobile-achieve-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
 }

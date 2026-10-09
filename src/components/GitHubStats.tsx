@@ -13,6 +13,7 @@ interface GitHubData {
     createdAt: string;
     avatar: string;
     bio: string | null;
+    yearsSince: number;
 }
 
 const GITHUB_USERNAME = 'Shreenathmehta32';
@@ -149,6 +150,9 @@ export const GitHubStats: React.FC = () => {
         fetch(`https://api.github.com/users/${GITHUB_USERNAME}`)
             .then((r) => r.json())
             .then((d) => {
+                const years = Math.max(1, Math.floor(
+                    (Date.now() - new Date(d.created_at).getTime()) / (1000 * 60 * 60 * 24 * 365)
+                ));
                 setData({
                     publicRepos: d.public_repos,
                     followers: d.followers,
@@ -156,6 +160,7 @@ export const GitHubStats: React.FC = () => {
                     createdAt: d.created_at,
                     avatar: d.avatar_url,
                     bio: d.bio,
+                    yearsSince: years,
                 });
             })
             .catch(() => { })
@@ -171,10 +176,6 @@ export const GitHubStats: React.FC = () => {
     }
 
     if (!data) return null;
-
-    const yearsSince = Math.floor(
-        (Date.now() - new Date(data.createdAt).getTime()) / (1000 * 60 * 60 * 24 * 365)
-    );
 
     return (
         <div className="github-stats">
@@ -202,7 +203,7 @@ export const GitHubStats: React.FC = () => {
                     <span className="github-stat-label">Following</span>
                 </div>
                 <div className="github-stat">
-                    <span className="github-stat-value">{yearsSince}+</span>
+                    <span className="github-stat-value">{data.yearsSince}+</span>
                     <span className="github-stat-label">Years</span>
                 </div>
             </div>
